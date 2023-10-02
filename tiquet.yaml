@@ -1,0 +1,53 @@
+namespace: tiquet
+tiquet:
+  defines: runnable
+  metadata:
+    name: tiquet
+    description: Tiquet is a tasks management application.
+    icon: https://emojiapi.dev/api/v1/card_index_dividers.svg
+  containers:
+    tiquet:
+      build: .
+  services:
+    flask-default-port:
+      container: tiquet
+      port: 5000
+      host-port: 5000
+      publish: false
+      protocol: TCP
+      description: Used by Flask to run the app.
+  connections:
+    sqlalchemy-database-uri:
+      target: tiquet/mariadb
+      service: mariadb
+  variables:
+    debug:
+      env: DEBUG
+      type: bool
+      description: Sets the app in debug mode.
+      value: true
+    cors-headers:
+      env: CORS_HEADERS
+      type: string
+      description: Headers for CORS.
+      value: '''Content-Type'''
+    sqlalchemy-database-uri:
+      env: SQLALCHEMY_DATABASE_URI
+      type: string
+      description: The database URL that should be used for the connection.
+      value: <- connection-hostname("sqlalchemy-database-uri")
+    sqlalchemy-track-modifications:
+      env: SQLALCHEMY_TRACK_MODIFICATIONS
+      type: bool
+      description: >-
+        If set to True, Flask-SQLAlchemy will track modifications of objects and
+        emit signals. The default is False.
+      value: false
+mariadb:
+  defines: runnable
+  inherits: mariadb/mariadb
+stack:
+  defines: group
+  members:
+    - tiquet/tiquet
+    - tiquet/mariadb
