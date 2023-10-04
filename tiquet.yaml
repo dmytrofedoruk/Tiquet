@@ -1,0 +1,43 @@
+namespace: tiquet
+tiquet:
+  defines: runnable
+  metadata:
+    name: tiquet
+    description: >-
+      Tiquet is an application for task management build with Flask for the
+      backend and React for the frontend.
+    icon: https://emojiapi.dev/api/v1/robot.svg
+  containers:
+    tiquet:
+      build: .
+  services:
+    flask-default-port:
+      container: tiquet
+      port: 5000
+      host-port: 5000
+      publish: false
+      protocol: TCP
+      description: This is the default port for Flask applications.
+  variables:
+    database-url:
+      env: DATABASE_URL
+      type: string
+      description: Database connection string for SQLAlchemy.
+      value: '!!!SETME!!!'
+    debug:
+      env: DEBUG
+      type: bool
+      description: Flask application debug mode toggle.
+      value: true
+    cors-headers:
+      env: CORS_HEADERS
+      type: string
+      description: Headers allowed for cross-origin requests.
+      value: '''Content-Type'''
+    sqlalchemy-track-modifications:
+      env: SQLALCHEMY_TRACK_MODIFICATIONS
+      type: bool
+      description: >-
+        Track modifications of objects and emit signals. Turned off to save
+        memory.
+      value: false
